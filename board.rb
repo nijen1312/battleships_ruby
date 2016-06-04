@@ -11,6 +11,7 @@ class Board
     @m_missCount=0;
   end
   def drawBoard(pFleet=0)
+    @m_pWin.wclear()
     @m_pWin.box(0,0)
     (M_HEIGHTSTEP..M_HEIGHT-1).each do |x|
       if x%M_HEIGHTSTEP==0

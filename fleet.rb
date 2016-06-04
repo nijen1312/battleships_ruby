@@ -6,6 +6,7 @@ require "./cruiser"
 require "ncursesw"
 
 class Fleet
+  include Common
   def initialize(size,window)
     @m_fleetSize=size
     @m_realFleetSize=0
