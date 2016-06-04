@@ -1,6 +1,6 @@
 require "./ship"
 
-class Patrol < Ship
+class Destroyer < Ship
   def initialize(hostality,battleshipLength,window)
     super(hostality,battleshipLength,window)
   end
