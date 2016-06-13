@@ -3,6 +3,7 @@ require "ncursesw"
 
 class Ship
   include Common
+  attr_accessor :m_xCoordinates, :m_yCoordinates, :m_isPlaced, :m_battleshipLength
   @@m_counter=0
   def initialize(hostality,battleshipLength,window)
     @m_pWin=window
@@ -87,14 +88,14 @@ class Ship
     end
     if @m_orientation
       if (futureBegY<1 || futureBegY>19||futureBegX<2 || futureBegX>38||futureEndX<2 || futureEndX>38)
-        return 0
+        return false
       end
     else
       if (futureBegX<2 || futureBegX>38 || futureBegY<1 || futureBegY>19 || futureEndY<1 || futureEndY>19)
-        return 0
+        return false
       end
     end
-    return 1
+    return true
   end
 
 end
