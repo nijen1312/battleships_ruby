@@ -36,9 +36,9 @@ class Ship
     if @m_orientation
       while i<=@m_battleshipLengthInUnits
         if @m_hitsTaken[j]==0
-          if !@m_hostality
+          # if !@m_hostality
             @m_pWin.mvwprintw(y,x+i,"#")
-          end
+          # end
         else
           @m_pWin.mvwprintw(y,x+i,"x")
         end
@@ -48,9 +48,9 @@ class Ship
     else
       while i<=@m_battleshipLengthInUnits
         if @m_hitsTaken[j]==0
-          if !@m_hostality
+          # if !@m_hostality
             @m_pWin.mvwprintw(y+i,x,"#")
-          end
+          # end
         else
           @m_pWin.mvwprintw(y+i,x,"x")
         end
@@ -91,15 +91,37 @@ class Ship
       a=[futureBegY,futureBegX]+coorArr2
     end
     if @m_orientation
-      if (a[0]<M_FIRSTY || a[0]>M_LASTY||a[1]<M_FIRSTX || a[1]>M_LASTX||a[3]<M_FIRSTX || a[3]>M_LASTX)
+      if (a[0]<M_FIRSTY || a[0]>M_LASTY)
+        return false
+      end
+      if (a[1]<M_FIRSTX || a[1]>M_LASTX)
+        return false
+      end
+      if (a[3]<M_FIRSTX || a[3]>M_LASTX)
         return false
       end
     else
-      if (a[1]<M_FIRSTX || a[1]>M_LASTX || a[0]<M_FIRSTY || a[0]>M_LASTY || a[2]<M_FIRSTY || a[2]>M_LASTY)
+      if (a[0]<M_FIRSTY || a[0]>M_LASTY)
+        return false
+      end
+      if (a[1]<M_FIRSTX || a[1]>M_LASTX)
+        return false
+      end
+      if (a[2]<M_FIRSTY || a[2]>M_LASTY)
         return false
       end
     end
     return true
+    # if @m_orientation
+    #   if (a[0]<M_FIRSTY || a[0]>M_LASTY||a[1]<M_FIRSTX || a[1]>M_LASTX||a[3]<M_FIRSTX || a[3]>M_LASTX)
+    #     return false
+    #   end
+    # else
+    #   if (a[1]<M_FIRSTX || a[1]>M_LASTX || a[0]<M_FIRSTY || a[0]>M_LASTY || a[2]<M_FIRSTY || a[2]>M_LASTY)
+    #     return false
+    #   end
+    # end
+    # return true
   end
 
 end
