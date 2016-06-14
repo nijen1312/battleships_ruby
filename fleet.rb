@@ -21,11 +21,11 @@ class Fleet
     @m_fleetArray.each do |e|
       if (e!=nil && e.m_isPlaced)
         ship.m_battleshipLength.times do |j|
-          ship.calcModuleCoordinates!(curShipModuleY,curShipModuleX,j)
+          a1=ship.calcModuleCoordinates!(curShipModuleY,curShipModuleX,j)
           e.m_battleshipLength.times do |k|
-            e.calcModuleCoordinates!(placedShipModuleY,placedShipModuleX,k)
-            xd=(curShipModuleX-placedShipModuleX).abs
-            yd=(curShipModuleY-placedShipModuleY).abs
+            a2=e.calcModuleCoordinates!(placedShipModuleY,placedShipModuleX,k)
+            xd=(a1[1]-a2[1]).abs
+            yd=(a1[0]-a2[0]).abs
             return false if (xd<=M_WIDTHSTEP && yd <= M_HEIGHTSTEP)
           end
         end

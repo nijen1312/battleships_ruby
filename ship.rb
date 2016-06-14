@@ -28,6 +28,7 @@ class Ship
       moduleX=@m_xCoordinates
       moduleY=@m_yCoordinates+M_HEIGHTSTEP*moduleNumber
     end
+    return [moduleY,moduleX]
   end
   def printShip(y=@m_yCoordinates,x=@m_xCoordinates)
     # @m_pWin.wrefresh()
@@ -77,21 +78,24 @@ class Ship
       ex=by
       ey=by+@m_battleshipLengthInUnits
     end
+    return [by,bx,ey,ex]
   end
   def checkValidCoordinates(c=0)
     futureBegY=futureEndY=@m_yCoordinates
     futureBegX=futureEndX=@m_xCoordinates
     if c!=0
-      calcFutureCoordinates!(futureBegY,futureBegX,futureEndY,futureEndX,c)
+      coorArr1=calcFutureCoordinates!(futureBegY,futureBegX,futureEndY,futureEndX,c)
+      a=coorArr1
     else
-      calcModuleCoordinates!(futureEndY,futureEndX,@m_battleshipLength-1)
+      coorArr2=calcModuleCoordinates!(futureEndY,futureEndX,@m_battleshipLength-1)
+      a=[futureBegY,futureBegX]+coorArr2
     end
     if @m_orientation
-      if (futureBegY<1 || futureBegY>19||futureBegX<2 || futureBegX>38||futureEndX<2 || futureEndX>38)
+      if (a[0]<M_FIRSTY || a[0]>M_LASTY||a[1]<M_FIRSTX || a[1]>M_LASTX||a[3]<M_FIRSTX || a[3]>M_LASTX)
         return false
       end
     else
-      if (futureBegX<2 || futureBegX>38 || futureBegY<1 || futureBegY>19 || futureEndY<1 || futureEndY>19)
+      if (a[1]<M_FIRSTX || a[1]>M_LASTX || a[0]<M_FIRSTY || a[0]>M_LASTY || a[2]<M_FIRSTY || a[2]>M_LASTY)
         return false
       end
     end
