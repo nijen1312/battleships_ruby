@@ -7,7 +7,7 @@ require "ncursesw"
 
 class Fleet
   include Common
-  #attr_accessor:
+  attr_accessor :m_HP, :m_pBoard
   def initialize(size,board)
     @m_fleetSize=size
     @m_realFleetSize=0
@@ -21,9 +21,9 @@ class Fleet
     @m_fleetArray.each do |e|
       if (e!=nil && e.m_isPlaced)
         ship.m_battleshipLength.times do |j|
-          a1=ship.calcModuleCoordinates!(curShipModuleY,curShipModuleX,j)
+          a1=ship.calcModuleCoordinates!(j)
           e.m_battleshipLength.times do |k|
-            a2=e.calcModuleCoordinates!(placedShipModuleY,placedShipModuleX,k)
+            a2=e.calcModuleCoordinates!(k)
             xd=(a1[1]-a2[1]).abs
             yd=(a1[0]-a2[0]).abs
             return false if (xd<=M_WIDTHSTEP && yd <= M_HEIGHTSTEP)
@@ -86,7 +86,7 @@ class Fleet
           @m_fleetArray[i].m_xCoordinates=(@m_fleetArray[i].m_xCoordinates-M_WIDTHSTEP)
         when KEY_RIGHT
           @m_fleetArray[i].m_xCoordinates=(@m_fleetArray[i].m_xCoordinates+M_WIDTHSTEP)
-        when "\n".ord
+        when "r".ord
           if @m_fleetArray[i].m_orientation==true
             @m_fleetArray[i].m_orientation=false if (!((@m_fleetArray[i].m_yCoordinates()+M_HEIGHTSTEP*(@m_fleetArray[i].m_battleshipLength()-1))>M_LASTY))
             @m_fleetArray[i].m_battleshipLengthInUnits=M_HEIGHTSTEP*(@m_fleetArray[i].m_battleshipLength-1)
@@ -94,7 +94,7 @@ class Fleet
             @m_fleetArray[i].m_orientation=true if (!((@m_fleetArray[i].m_xCoordinates()+M_WIDTHSTEP*(@m_fleetArray[i].m_battleshipLength()-1))>M_LASTX))
             @m_fleetArray[i].m_battleshipLengthInUnits=M_WIDTHSTEP*(@m_fleetArray[i].m_battleshipLength-1)
           end
-        when "r".ord
+        when "\n".ord
           if checkColision(@m_fleetArray[i])
             @m_fleetArray[i].m_isPlaced=true
             i=i+1;
@@ -104,12 +104,32 @@ class Fleet
             end
           end
         end
-        @m_pWin.wclear()
-        @m_pBoard.drawBoard(self)
-        @m_fleetArray[i].printShip()
-        @m_pWin.wrefresh()
+        if i<@m_fleetSize
+          @m_pWin.wclear()
+          @m_fleetArray[i].printShip()
+          @m_pBoard.drawBoard(self)
+          @m_pWin.wrefresh()
+        end
       end
     end
+  end
+  def checkHit(y,x)
+     @m_fleetSize.times do |i|
+       @m_fleetArray[i].m_battleshipLength.times do |k|
+        a=@m_fleetArray[i].calcModuleCoordinates!(k)
+        xd=(x-a[1]).abs
+        yd=(y-a[0]).abs
+        if (xd == 0 && yd == 0 && @m_fleetArray[i].m_hitsTaken[k]==0)
+          @m_fleetArray[i].m_hitsTaken[k]=1
+          @m_HP-=1
+          return true
+        end
+        if (xd == 0 && yd == 0 && @m_fleetArray[i].m_hitsTaken[k]==1)
+          return true
+        end
+      end
+    end
+    return false
   end
 
 

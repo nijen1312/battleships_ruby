@@ -11,6 +11,18 @@ class Board
     @m_missTab=Array.new(M_NUMOFSQUARES,0)
     @m_missCount=0;
   end
+
+  def setMiss(y,x)
+     @m_missCount.times do |i|
+      if (@m_missTab[i]==y && @m_missTab[i+1]==x)
+        return 0
+      end
+    end
+    @m_missTab[@m_missCount]=y
+    @m_missTab[@m_missCount+1]=x
+    @m_missCount+=2
+  end
+
   def drawBoard(pFleet=0)
     @m_pWin.wclear()
     @m_pWin.box(0,0)
@@ -34,10 +46,6 @@ class Board
     end
     @m_pWin.wrefresh()
   end
-  def setMiss(y,x)
-    @m_missTab[@m_missCount]=y
-    @m_missTab[@m_missCount+1]=x
-    @m_missCount+=2
-  end
+
 
 end

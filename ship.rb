@@ -3,7 +3,7 @@ require "ncursesw"
 include Ncurses
 class Ship
   include Common
-  attr_accessor :m_xCoordinates, :m_yCoordinates, :m_isPlaced, :m_battleshipLength, :m_battleshipLengthInUnits, :m_orientation
+  attr_accessor :m_xCoordinates, :m_yCoordinates, :m_isPlaced, :m_battleshipLength, :m_battleshipLengthInUnits, :m_orientation, :m_hitsTaken
   @@m_counter=0
   def initialize(hostality,battleshipLength,window)
     @m_pWin=window
@@ -20,7 +20,7 @@ class Ship
     # end
     # @m_battleshipLengthInUnits=(battleshipLength-1)*
   end
-  def calcModuleCoordinates!(moduleY,moduleX,moduleNumber)
+  def calcModuleCoordinates!(moduleNumber)
     if @m_orientation
       moduleY=@m_yCoordinates
       moduleX=@m_xCoordinates+M_WIDTHSTEP*moduleNumber
@@ -87,7 +87,7 @@ class Ship
       coorArr1=calcFutureCoordinates!(futureBegY,futureBegX,futureEndY,futureEndX,c)
       a=coorArr1
     else
-      coorArr2=calcModuleCoordinates!(futureEndY,futureEndX,@m_battleshipLength-1)
+      coorArr2=calcModuleCoordinates!(@m_battleshipLength-1)
       a=[futureBegY,futureBegX]+coorArr2
     end
     if @m_orientation

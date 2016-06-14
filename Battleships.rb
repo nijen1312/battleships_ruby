@@ -3,6 +3,7 @@ require "ncursesw"
 require "./board"
 require "./fleet"
 include Ncurses
+include Common
 
 class AuxBox
   def initialize()
@@ -22,9 +23,60 @@ class AuxBox
     @m_pWin.getmaxyx(y=[],x=[])
     @m_pWin.wclear()
     @m_pWin.box(0,0)
-    @m_pWin.mvwprintw(y/2,(x-mess1.length)/2,"%s%3d",mess1,pHP)
-    @m_pWin.mvwprintw((y/2)+1,(x-mess2.length)/2,"%s%3d",mess2,eHP)
+    @m_pWin.mvwprintw(y[0]/2,(x[0]-mess1.length)/2,"%s%3d",mess1,pHP)
+    @m_pWin.mvwprintw((y[0]/2)+1,(x[0]-mess2.length)/2,"%s%3d",mess2,eHP)
     @m_pWin.wrefresh()
+  end
+end
+def barrage(enemyFleet,playerFleet,auxWin)
+  y=M_FIRSTY
+  x=M_FIRSTX
+  auxWin.displayScore(enemyFleet.m_HP,playerFleet.m_HP)
+  enemyFleet.m_pBoard.m_pWin.wmove(y,x)
+  c=1
+  while (c!="q".ord && enemyFleet.m_HP && playerFleet.m_HP)
+    c=enemyFleet.m_pBoard.m_pWin.wgetch()
+    case c
+    when KEY_UP
+      if (y>M_FIRSTY)
+        y-=M_HEIGHTSTEP
+        # enemyFleet.m_pBoard.m_pWin.wmove(y,x)
+        # enemyFleet.m_pBoard.m_pWin.wrefresh()
+      end
+    when KEY_DOWN
+      if (y<M_LASTY)
+        y+=M_HEIGHTSTEP
+        # enemyFleet.m_pBoard.m_pWin.wmove(y,x)
+        # enemyFleet.m_pBoard.m_pWin.wrefresh()
+      end
+    when KEY_LEFT
+      if (x>M_FIRSTX)
+        x-=M_WIDTHSTEP
+        # enemyFleet.m_pBoard.m_pWin.wmove(y,x)
+        # enemyFleet.m_pBoard.m_pWin.wrefresh()
+      end
+    when KEY_RIGHT
+      if (x<M_LASTX)
+        x+=M_WIDTHSTEP
+        # enemyFleet.m_pBoard.m_pWin.wmove(y,x)
+        # enemyFleet.m_pBoard.m_pWin.wrefresh()
+      end
+    when "\n".ord
+      if !(enemyFleet.checkHit(y,x))
+        enemyFleet.m_pBoard.setMiss(y,x)
+      end
+      ry=M_FIRSTY+rand(10)*M_HEIGHTSTEP
+      rx=M_FIRSTX+rand(10)*M_WIDTHSTEP
+      if !(playerFleet.checkHit(ry,rx))
+        playerFleet.m_pBoard.setMiss(ry,rx)
+      end
+    end
+  enemyFleet.m_pBoard.drawBoard(enemyFleet)
+  playerFleet.m_pBoard.drawBoard(playerFleet)
+  enemyFleet.m_pBoard.m_pWin.wrefresh()
+  auxWin.displayScore(enemyFleet.m_HP,playerFleet.m_HP)
+  enemyFleet.m_pBoard.m_pWin.wmove(y,x)
+
   end
 end
 begin
@@ -45,10 +97,11 @@ begin
   scr.refresh()
   playerBoard.drawBoard()
   playerFleet.deployFleet()
+  barrage(enemyFleet,playerFleet,auxWin)
   # board=WINDOW.new(Common::M_HEIGHT,Common::M_WIDTH,0,0)
   # board.box(0,0)
   # board.wrefresh()
-  # scr.wgetch();
+  scr.wgetch();
 
 
 
