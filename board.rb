@@ -1,6 +1,5 @@
 require "./common"
 require "ncursesw"
-# include Ncurses
 
 class Board
   include Common

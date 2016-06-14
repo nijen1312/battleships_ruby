@@ -52,7 +52,7 @@ class Fleet
         @m_fleetArray[i]=Submarine.new(hostality,submarineLength,@m_pWin)
       end
       if hostality
-        while (checkColision(@m_fleetArray[i]) != @m_fleetArray[i].checkValidCoordinates())
+        while (!@m_fleetArray[i].checkValidCoordinates() || !checkColision(@m_fleetArray[i]))
           @m_fleetArray[i].m_yCoordinates=M_FIRSTY+rand(10)*M_HEIGHTSTEP
           @m_fleetArray[i].m_xCoordinates=M_FIRSTX+rand(10)*M_WIDTHSTEP
         end

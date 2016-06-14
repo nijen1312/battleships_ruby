@@ -27,6 +27,24 @@ class AuxBox
     @m_pWin.mvwprintw((y[0]/2)+1,(x[0]-mess2.length)/2,"%s%3d",mess2,eHP)
     @m_pWin.wrefresh()
   end
+  def displayWinner(w)
+    mess1="You win"
+    mess2="You Lose"
+    mess3="Hit 'Q' to quit."
+    @m_pWin.wclear()
+    @m_pWin.box(0,0)
+    @m_pWin.wrefresh()
+    if w
+      @m_pWin.mvwprintw(2,(@m_pWin.getmaxx()-mess1.length)/2,mess1)
+    else
+      @m_pWin.mvwprintw(2,(@m_pWin.getmaxx()-mess2.length)/2,mess2)
+    end
+    @m_pWin.mvwprintw(4,(@m_pWin.getmaxx()-mess3.length)/2,mess3)
+    @m_pWin.wrefresh()
+    while (c=Ncurses.getch() != "q".ord)
+
+    end
+  end
 end
 def barrage(enemyFleet,playerFleet,auxWin)
   y=M_FIRSTY
@@ -34,32 +52,24 @@ def barrage(enemyFleet,playerFleet,auxWin)
   auxWin.displayScore(enemyFleet.m_HP,playerFleet.m_HP)
   enemyFleet.m_pBoard.m_pWin.wmove(y,x)
   c=1
-  while (c!="q".ord && enemyFleet.m_HP && playerFleet.m_HP)
+  while (c!="q".ord)
     c=enemyFleet.m_pBoard.m_pWin.wgetch()
     case c
     when KEY_UP
       if (y>M_FIRSTY)
         y-=M_HEIGHTSTEP
-        # enemyFleet.m_pBoard.m_pWin.wmove(y,x)
-        # enemyFleet.m_pBoard.m_pWin.wrefresh()
       end
     when KEY_DOWN
       if (y<M_LASTY)
         y+=M_HEIGHTSTEP
-        # enemyFleet.m_pBoard.m_pWin.wmove(y,x)
-        # enemyFleet.m_pBoard.m_pWin.wrefresh()
       end
     when KEY_LEFT
       if (x>M_FIRSTX)
         x-=M_WIDTHSTEP
-        # enemyFleet.m_pBoard.m_pWin.wmove(y,x)
-        # enemyFleet.m_pBoard.m_pWin.wrefresh()
       end
     when KEY_RIGHT
       if (x<M_LASTX)
         x+=M_WIDTHSTEP
-        # enemyFleet.m_pBoard.m_pWin.wmove(y,x)
-        # enemyFleet.m_pBoard.m_pWin.wrefresh()
       end
     when "\n".ord
       if !(enemyFleet.checkHit(y,x))
@@ -76,7 +86,9 @@ def barrage(enemyFleet,playerFleet,auxWin)
   enemyFleet.m_pBoard.m_pWin.wrefresh()
   auxWin.displayScore(enemyFleet.m_HP,playerFleet.m_HP)
   enemyFleet.m_pBoard.m_pWin.wmove(y,x)
-
+  if   (enemyFleet.m_HP==0 || playerFleet.m_HP==0)
+    return (playerFleet.m_HP - enemyFleet.m_HP)
+  end
   end
 end
 begin
@@ -97,16 +109,12 @@ begin
   scr.refresh()
   playerBoard.drawBoard()
   playerFleet.deployFleet()
-  barrage(enemyFleet,playerFleet,auxWin)
+  score=barrage(enemyFleet,playerFleet,auxWin)
+  auxWin.displayWinner(score)
   # board=WINDOW.new(Common::M_HEIGHT,Common::M_WIDTH,0,0)
   # board.box(0,0)
   # board.wrefresh()
   scr.wgetch();
-
-
-
-
-
 ensure
 Ncurses.endwin();
 
