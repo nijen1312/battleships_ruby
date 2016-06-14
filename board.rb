@@ -4,6 +4,7 @@ require "ncursesw"
 
 class Board
   include Common
+  attr_accessor :m_pWin
   def initialize(yCoor,xCoor)
     @m_pWin=WINDOW.new(M_HEIGHT,M_WIDTH,yCoor,xCoor)
     @m_pWin.keypad(TRUE)

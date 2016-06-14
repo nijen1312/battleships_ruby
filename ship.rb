@@ -1,39 +1,39 @@
 require "./common"
 require "ncursesw"
-
+include Ncurses
 class Ship
   include Common
-  attr_accessor :m_xCoordinates, :m_yCoordinates, :m_isPlaced, :m_battleshipLength
+  attr_accessor :m_xCoordinates, :m_yCoordinates, :m_isPlaced, :m_battleshipLength, :m_battleshipLengthInUnits, :m_orientation
   @@m_counter=0
   def initialize(hostality,battleshipLength,window)
     @m_pWin=window
     @m_hostality=hostality
     @m_battleshipLength=battleshipLength
     @m_hitsTaken=Array.new(@m_battleshipLength,0)
-    @m_xCoordinates=-2
-    @m_yCoordinates=-1
-    @m_isPlaced=false
-    @m_orientation=@@m_counter%2
-    @m_battleshipLengthInUnits= (@m_orientation==1 ? M_WIDTHSTEP*(m_battleshipLength-1) : M_HEIGHTSTEP*(m_battleshipLength-1))
+    @m_xCoordinates = -2
+    @m_yCoordinates = -1
+    @m_isPlaced = false
+    @m_orientation = (@@m_counter%2 == 0 ? false : true)
+    @m_battleshipLengthInUnits = (@m_orientation ? M_WIDTHSTEP*(m_battleshipLength-1) : M_HEIGHTSTEP*(m_battleshipLength-1))
+    @@m_counter=@@m_counter+1
 
-    end
-    @m_battleshipLengthInUnits=(battleshipLength-1)*
-    @@m_counter+=1
+    # end
+    # @m_battleshipLengthInUnits=(battleshipLength-1)*
   end
   def calcModuleCoordinates!(moduleY,moduleX,moduleNumber)
     if @m_orientation
-      moduleY=m_yCoordinates
-      moduleX=m_xCoordinates+M_WIDTHSTEP*moduleNumber
+      moduleY=@m_yCoordinates
+      moduleX=@m_xCoordinates+M_WIDTHSTEP*moduleNumber
     else
-      moduleX=m_xCoordinates
-      moduleY=m_yCoordinates+M_HEIGHTSTEP*moduleNumber
+      moduleX=@m_xCoordinates
+      moduleY=@m_yCoordinates+M_HEIGHTSTEP*moduleNumber
     end
   end
   def printShip(y=@m_yCoordinates,x=@m_xCoordinates)
     # @m_pWin.wrefresh()
     i=j=0
     if @m_orientation
-      while i<@m_battleshipLengthInUnits
+      while i<=@m_battleshipLengthInUnits
         if @m_hitsTaken[j]==0
           if !@m_hostality
             @m_pWin.mvwprintw(y,x+i,"#")
@@ -45,7 +45,7 @@ class Ship
         j+=1
       end
     else
-      while i<@m_battleshipLengthInUnits
+      while i<=@m_battleshipLengthInUnits
         if @m_hitsTaken[j]==0
           if !@m_hostality
             @m_pWin.mvwprintw(y+i,x,"#")
@@ -82,9 +82,9 @@ class Ship
     futureBegY=futureEndY=@m_yCoordinates
     futureBegX=futureEndX=@m_xCoordinates
     if c!=0
-      calcFutureCoordinates(futureBegY,futureBegX,futureEndY,futureEndX,c)
+      calcFutureCoordinates!(futureBegY,futureBegX,futureEndY,futureEndX,c)
     else
-      calcModuleCoordinates(futureEndY,futureEndX,@m_battleshipLength-1)
+      calcModuleCoordinates!(futureEndY,futureEndX,@m_battleshipLength-1)
     end
     if @m_orientation
       if (futureBegY<1 || futureBegY>19||futureBegX<2 || futureBegX>38||futureEndX<2 || futureEndX>38)
